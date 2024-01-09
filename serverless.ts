@@ -1,11 +1,17 @@
 import type { AWS } from '@serverless/typescript';
 
-import hello from '@functions/hello';
+/**
+ * Cada que se crea un nueva funcion, esta debe ser registrada en
+ * este archivo serverless.ts. Lo primero seria importarla del
+ * index general de funciones y despuest añadirla al objeto de
+ * 'functions'
+ */
+import { findAll, findById, findByQuery } from '@functions/index';
 
 const serverlessConfiguration: AWS = {
   service: 'sls-nodejs-typescript',
   frameworkVersion: '3',
-  plugins: ['serverless-esbuild'],
+  plugins: ['serverless-esbuild', 'serverless-offline'],
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
@@ -19,7 +25,7 @@ const serverlessConfiguration: AWS = {
     },
   },
   // import the function via paths
-  functions: { hello },
+  functions: { findAll, findById, findByQuery },
   package: { individually: true },
   custom: {
     esbuild: {
