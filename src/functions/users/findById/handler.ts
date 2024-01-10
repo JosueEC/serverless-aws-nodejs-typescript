@@ -1,7 +1,7 @@
 import { formatJSONResponse } from "@libs/api-gateway";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
 
-const findById = async (event: APIGatewayProxyEvent, context: Context) => {
+const main = async (event: APIGatewayProxyEvent, context: Context) => {
     try {
         /**
          * * .pathParameters
@@ -21,4 +21,4 @@ const findById = async (event: APIGatewayProxyEvent, context: Context) => {
     }
 };
 
-export const main = findById;
+export default main;

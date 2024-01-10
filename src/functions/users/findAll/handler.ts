@@ -17,7 +17,7 @@ import { APIGatewayProxyEvent, Context } from 'aws-lambda';
  * 
  * El tipado de estos parametros, para este caso, viene de aws-lambda
  */
-const findAll = async (event: APIGatewayProxyEvent, context: Context) => {
+const main = async (event: APIGatewayProxyEvent, context: Context) => {
   try {
     /**
      * Esta es una forma, en la que podemos obtener un dato del body,
@@ -50,4 +50,12 @@ const findAll = async (event: APIGatewayProxyEvent, context: Context) => {
   }
 };
 
-export const main = findAll;
+/**
+ * Recuerda que tenemos 2 formas de exportacion, una que
+ * cuando son varios archivos a exportar, y otra cuando
+ * es uno solo.
+ * 
+ * Este es el caso de un solo archivo, por ende podemos
+ * usar el export default.
+ */
+export default main;
