@@ -18,27 +18,36 @@ import { APIGatewayProxyEvent, Context } from 'aws-lambda';
  * El tipado de estos parametros, para este caso, viene de aws-lambda
  */
 const findAll = async (event: APIGatewayProxyEvent, context: Context) => {
+  try {
+    /**
+     * Esta es una forma, en la que podemos obtener un dato del body,
+     * el cual no esta tipado dentro del mismo.
+    */
+    const { name } = JSON.parse(event.body) as { name: string };
+    /**
+     * * awsRequestId
+     * Es un dato importante el cual nos permite identificar
+     * una request, lo cual es util para trackear errores
+     * o comportamientos en hilos de ejecucion.
+     * 
+     * Ya que este ID puede ser usado en cloudwatch, el cual es
+     * otro servicio de AWS
+    */
+    const { awsRequestId } = context;
 
-  /**
-   * Esta es una forma, en la que podemos obtener un dato del body,
-   * el cual no esta tipado dentro del mismo.
-   */
-  const { name } = JSON.parse(event.body) as { name: string };
-  /**
-   * * awsRequestId
-   * Es un dato importante el cual nos permite identificar
-   * una request, lo cual es util para trackear errores
-   * o comportamientos en hilos de ejecucion.
-   * 
-   * Ya que este ID puede ser usado en cloudwatch, el cual es
-   * otro servicio de AWS
-   */
-  const { awsRequestId } = context;
-
-  return formatJSONResponse({
-    message: `Hello ${name}, welcome to the exciting Serverless world!`,
-    awsRequestId,
-  });
+    return formatJSONResponse({
+      message: `Hello ${name}, welcome to the exciting Serverless world!`,
+      awsRequestId,
+    });
+  } catch (error) {
+    /**
+     * Haciendo uso de un try catch, es como podemos capturar y
+     * notificar los errores al cliente
+     */
+    return formatJSONResponse({
+      error: error.message,
+    });
+  }
 };
 
 export const main = findAll;
