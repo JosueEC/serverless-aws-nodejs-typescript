@@ -22,12 +22,19 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
+      STAGE: '${self:custom.stage}',
+      DB_HOST: 'localhost',
+      DB_PORT: '5433',
+      DB_USER: 'josue',
+      DB_PASSWORD: 'secret1234',
+      DB_SCHEMA: 'serverlessdb',
     },
   },
   // import the function via paths
   functions: { findAll, findById, findByQuery },
   package: { individually: true },
   custom: {
+    stage: '${opt:stage}, "local"',
     esbuild: {
       bundle: true,
       minify: false,
