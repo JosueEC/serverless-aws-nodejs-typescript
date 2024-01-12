@@ -59,6 +59,12 @@ export const main = async (event: APIGatewayProxyEvent, context: Context) => {
      * la configuracion del container.
      */
     const userService = container.get(UserService);
+    /**
+     * En serverles podemos acceder a las variables de entorno sin
+     * necesidad de instalar librerias externas. Solo hay que
+     * definir estas en el apartado environmente del Serverless.ts
+     */
+    // const STAGE = process.env.STAGE;
 
     return formatJSONResponse({
       awsRequestId,
