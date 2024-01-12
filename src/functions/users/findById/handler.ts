@@ -1,7 +1,10 @@
 import { formatJSONResponse } from "@libs/api-gateway";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
+import { container } from "src/config/inversify.config";
+// import { UsersRepository } from "src/users/entity/user.repository";
+import { UserService } from "src/users/services/user.service";
 
-const main = async (event: APIGatewayProxyEvent, context: Context) => {
+export const main = async (event: APIGatewayProxyEvent, context: Context) => {
     try {
         /**
          * * .pathParameters
@@ -9,10 +12,13 @@ const main = async (event: APIGatewayProxyEvent, context: Context) => {
         */
         const { id } = event.pathParameters;
         const { awsRequestId } = context;
+        // const userService = new UserService(new UsersRepository);
+        const userService = container.get(UserService);
     
         return formatJSONResponse({
-            message: `${id} is the ID and this is the users findById handler`,
             awsRequestId,
+            message: `${id} is the ID and this is the users findById handler`,
+            result: userService.findById(id),
         });
     } catch (error) {
         return formatJSONResponse({
@@ -20,5 +26,3 @@ const main = async (event: APIGatewayProxyEvent, context: Context) => {
         });
     }
 };
-
-export default main;
