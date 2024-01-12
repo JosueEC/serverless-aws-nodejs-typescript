@@ -1,5 +1,8 @@
 import { formatJSONResponse } from '@libs/api-gateway';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
+import { container } from 'src/config/inversify.config';
+// import { UsersRepository } from 'src/users/entity/user.repository';
+import { UserService } from 'src/users/services/user.service';
 
 /**
  * Los 'handler', son la funciones que contendran la logica para
@@ -17,7 +20,15 @@ import { APIGatewayProxyEvent, Context } from 'aws-lambda';
  * 
  * El tipado de estos parametros, para este caso, viene de aws-lambda
  */
-const main = async (event: APIGatewayProxyEvent, context: Context) => {
+/**
+ * Recuerda que tenemos 2 formas de exportacion, una que
+ * cuando son varios archivos a exportar, y otra cuando
+ * es uno solo.
+ * 
+ * Este es el caso de un solo archivo, por ende podemos
+ * exportar directamente la declaracion de la funcion.
+ */
+export const main = async (event: APIGatewayProxyEvent, context: Context) => {
   try {
     /**
      * Esta es una forma, en la que podemos obtener un dato del body,
@@ -34,10 +45,25 @@ const main = async (event: APIGatewayProxyEvent, context: Context) => {
      * otro servicio de AWS
     */
     const { awsRequestId } = context;
+    /**
+     * Esta es la forma de inyectar dependencias sin el uso de
+     * decoradores. Aqui estamos creando una instancia de la clase
+     * UserService, la cual espera la clase Repository en su
+     * constructor. De esta forma podemos acceder a los metodos del
+     * UserService.
+     */
+    // const userService = new UserService(new UsersRepository);
+    /**
+     * Y esta es la forma en la que inyectamos dependencias usando
+     * la libreria inversify, previamente debimos haver definido
+     * la configuracion del container.
+     */
+    const userService = container.get(UserService);
 
     return formatJSONResponse({
-      message: `Hello ${name}, welcome to the exciting Serverless world!`,
       awsRequestId,
+      message: `Hello ${name}, welcome to the exciting Serverless world!`,
+      result: userService.findAll(),
     });
   } catch (error) {
     /**
@@ -49,13 +75,3 @@ const main = async (event: APIGatewayProxyEvent, context: Context) => {
     });
   }
 };
-
-/**
- * Recuerda que tenemos 2 formas de exportacion, una que
- * cuando son varios archivos a exportar, y otra cuando
- * es uno solo.
- * 
- * Este es el caso de un solo archivo, por ende podemos
- * usar el export default.
- */
-export default main;
