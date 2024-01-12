@@ -1,7 +1,7 @@
 import { formatJSONResponse } from "@libs/api-gateway";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
 
-const main = async (event: APIGatewayProxyEvent, context: Context) => {
+export const main = async (event: APIGatewayProxyEvent, context: Context) => {
     try {
         const { awsRequestId } = context;
         /**
@@ -21,5 +21,3 @@ const main = async (event: APIGatewayProxyEvent, context: Context) => {
         });
     }
 };
-
-export default main;
